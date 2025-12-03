@@ -3,6 +3,9 @@
 # Capstone project for ics 499-52
 
 Collaborators: Aidurus Ibrahim, Aaqil Jaffer, Joseph vang, Mahad
+
+
+
 Project: Focus app
 
 ## Run Locally
