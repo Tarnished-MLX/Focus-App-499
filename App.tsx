@@ -7,14 +7,14 @@ import StatsDashboard from './components/StatsDashboard';
 import SettingsPanel from './components/SettingsPanel';
 import { StorageService } from './services/storageService';
 import { getFunBreakActivity, getFruitFact } from './services/geminiService';
-import { Play, Pause, RefreshCw, Sprout, BookOpen, Clock, ListTodo, BarChart2, Settings, Home, AlertTriangle, Quote as QuoteIcon } from 'lucide-react';
+import { Play, Pause, RefreshCw, Sprout, BookOpen, Home, ListTodo, BarChart2, Settings, AlertTriangle, Quote as QuoteIcon } from 'lucide-react';
 
-// Sound Assets (Using reliable CDNs for demo)
+// Sound Assets
 const SOUNDS = {
   START: 'https://actions.google.com/sounds/v1/alarms/beep_short.ogg',
-  COMPLETE: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_12b0c7443c.mp3?filename=achievement-bell-600.mp3', // Pleasant bell sound
+  COMPLETE: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_12b0c7443c.mp3?filename=achievement-bell-600.mp3',
   BREAK_COMPLETE: 'https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg',
-  MUSIC: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3' // Royalty free Lofi
+  MUSIC: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3'
 };
 
 const App: React.FC = () => {
@@ -86,10 +86,12 @@ const App: React.FC = () => {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    // Update Timer if IDLE when settings change
+    
+    // Sync timer with settings if IDLE
     if (timerState === TimerState.IDLE) {
        updateTimeForMode(mode);
     }
+    
     StorageService.saveSettings(settings);
     
     // Handle Music
@@ -169,6 +171,12 @@ const App: React.FC = () => {
     setCurrentBreak(null);
     setNewReward(null);
     setDistractionCount(0);
+    
+    // Clear any active interval
+    if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+    }
   };
 
   // Tree Logic
@@ -187,26 +195,27 @@ const App: React.FC = () => {
 
   const currentStage = timerState === TimerState.COMPLETED ? TreeStage.FRUITING : getTreeStage(progress);
 
-  // Timer Tick
+  // 1. Interval just for ticking down
   useEffect(() => {
     if (timerState === TimerState.RUNNING) {
       timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            handleComplete();
-            return 0;
-          }
-          return prev - 1;
-        });
+        setTimeLeft((prev) => Math.max(0, prev - 1));
       }, 1000);
-    } else if (timerRef.current) {
-      clearInterval(timerRef.current);
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current);
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerState]);
+
+  // 2. Effect to watch for completion
+  useEffect(() => {
+    if (timeLeft === 0 && timerState === TimerState.RUNNING) {
+        handleComplete();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft, timerState]);
 
   const handleComplete = async () => {
     setTimerState(TimerState.COMPLETED);
@@ -287,6 +296,17 @@ const App: React.FC = () => {
         setSettings({...settings, selectedTree: tree});
         playSound(SOUNDS.COMPLETE);
     }
+  };
+
+  const handleClearAllData = () => {
+      StorageService.clearAllData();
+      setRewards([]);
+      setTasks([]);
+      setSeeds(0);
+      setUnlockedTrees(['OAK']);
+      setSettings(DEFAULT_SETTINGS);
+      // Reload page to ensure clean slate
+      window.location.reload();
   };
 
   // --- RENDER HELPERS ---
@@ -479,7 +499,7 @@ const App: React.FC = () => {
           {/* OTHER VIEWS */}
           {activeTab === 'TASKS' && <TaskManager tasks={tasks} setTasks={setTasks} />}
           {activeTab === 'STATS' && <StatsDashboard />}
-          {activeTab === 'SETTINGS' && <SettingsPanel settings={settings} updateSettings={(s) => setSettings({...settings, ...s})} />}
+          {activeTab === 'SETTINGS' && <SettingsPanel settings={settings} updateSettings={(s) => setSettings({...settings, ...s})} onClearData={handleClearAllData} />}
           
         </div>
       </div>

@@ -1,13 +1,14 @@
 import React from 'react';
 import { AppSettings } from '../types';
-import { Moon, Sun, Volume2, VolumeX, Shield, ShieldAlert, Clock, Music } from 'lucide-react';
+import { Moon, Sun, Volume2, VolumeX, Shield, ShieldAlert, Clock, Music, AlertOctagon } from 'lucide-react';
 
 interface SettingsPanelProps {
   settings: AppSettings;
   updateSettings: (s: Partial<AppSettings>) => void;
+  onClearData: () => void;
 }
 
-const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, updateSettings }) => {
+const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, updateSettings, onClearData }) => {
   return (
     <div className="w-full h-full overflow-y-auto pb-20">
        <h2 className="text-2xl font-bold mb-6 dark:text-white">Settings</h2>
@@ -142,7 +143,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, updateSettings 
        </section>
 
        {/* Hard Mode */}
-       <section>
+       <section className="mb-6">
          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Distraction Control</h3>
          <div className={`rounded-xl p-4 border transition-colors ${settings.hardMode ? 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800' : 'bg-white border-slate-100 dark:bg-slate-800 dark:border-slate-700'}`}>
             <div className="flex justify-between items-start">
@@ -165,6 +166,23 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, updateSettings 
                </button>
             </div>
          </div>
+       </section>
+
+       {/* Danger Zone */}
+       <section className="mb-8">
+            <h3 className="text-xs font-bold text-red-400 uppercase tracking-wider mb-3">Danger Zone</h3>
+            <div className="bg-red-50 dark:bg-red-900/10 rounded-xl p-4 border border-red-200 dark:border-red-900/30">
+                <button 
+                    onClick={() => {
+                        if (window.confirm("WARNING: This will delete ALL your fruits, seeds, trees, tasks, and history. This cannot be undone.")) {
+                            onClearData();
+                        }
+                    }}
+                    className="w-full py-3 bg-white dark:bg-red-900/30 text-red-600 dark:text-red-400 font-bold rounded-lg border border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/50 flex items-center justify-center gap-2"
+                >
+                    <AlertOctagon size={18} /> Reset All Data
+                </button>
+            </div>
        </section>
     </div>
   );
