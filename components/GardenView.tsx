@@ -38,7 +38,7 @@ const GardenView: React.FC<GardenViewProps> = ({
   };
 
   return (
-    <div className="absolute inset-0 bg-sky-100 dark:bg-slate-900 z-50 flex flex-col p-6 overflow-hidden transition-colors">
+    <div className="absolute inset-0 bg-slate-50 dark:bg-slate-900 z-50 flex flex-col p-6 overflow-hidden transition-colors">
       <div className="flex justify-between items-center mb-6">
         <div>
             <h2 className="text-3xl font-bold text-green-800 dark:text-green-400">

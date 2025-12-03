@@ -12,7 +12,7 @@ import { Play, Pause, RefreshCw, Sprout, BookOpen, Clock, ListTodo, BarChart2, S
 // Sound Assets (Using reliable CDNs for demo)
 const SOUNDS = {
   START: 'https://actions.google.com/sounds/v1/alarms/beep_short.ogg',
-  COMPLETE: 'https://actions.google.com/sounds/v1/cartoon/clown_horn.ogg', // Fun reward sound
+  COMPLETE: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_12b0c7443c.mp3?filename=achievement-bell-600.mp3', // Pleasant bell sound
   BREAK_COMPLETE: 'https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg',
   MUSIC: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3' // Royalty free Lofi
 };
@@ -307,10 +307,10 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-sky-100 dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative font-sans">
+    <div className="min-h-screen flex flex-col items-center bg-slate-50 dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative font-sans">
       
       {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-1/2 bg-sky-200 dark:bg-slate-800 -z-10 rounded-b-[3rem] shadow-lg transition-colors duration-500"></div>
+      <div className="absolute top-0 left-0 w-full h-1/2 bg-slate-200 dark:bg-slate-800 -z-10 rounded-b-[3rem] shadow-lg transition-colors duration-500"></div>
       
       {/* Distraction Overlay */}
       {showDistractionWarning && timerState === TimerState.RUNNING && (
@@ -330,30 +330,30 @@ const App: React.FC = () => {
       )}
 
       {/* Header */}
-      <div className="w-full max-w-md flex justify-between items-center p-6 text-white z-10">
-        <h1 className="text-xl font-bold flex items-center gap-2 drop-shadow-md">
-          <Sprout className="w-6 h-6" /> Focus Forest
+      <div className="w-full max-w-md flex justify-between items-center p-6 text-slate-700 dark:text-white z-10 transition-colors">
+        <h1 className="text-xl font-bold flex items-center gap-2 drop-shadow-sm">
+          <Sprout className="w-6 h-6 text-emerald-600 dark:text-emerald-400" /> Focus Forest
         </h1>
         <button 
           onClick={() => setShowGarden(true)}
-          className="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-white/30 transition shadow-sm flex items-center gap-2"
+          className="bg-white/50 dark:bg-slate-700/50 backdrop-blur-md px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-white/80 transition shadow-sm flex items-center gap-2 border border-slate-200 dark:border-slate-600"
         >
           My Garden ({rewards.length}) 🍎
         </button>
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 w-full max-w-md bg-white dark:bg-slate-800 rounded-t-3xl shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.3)] relative z-10 flex flex-col overflow-hidden transition-colors duration-500">
+      <div className="flex-1 w-full max-w-md bg-white dark:bg-slate-800 rounded-t-3xl shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.3)] relative z-10 flex flex-col overflow-hidden transition-colors duration-500">
         
         {/* Navigation Tabs */}
         <div className="flex justify-around p-2 border-b border-slate-100 dark:border-slate-700">
-           <button onClick={() => setActiveTab('TIMER')} className={`p-3 rounded-xl transition-all ${activeTab === 'TIMER' ? 'bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-400' : 'text-slate-400'}`}>
+           <button onClick={() => setActiveTab('TIMER')} className={`p-3 rounded-xl transition-all ${activeTab === 'TIMER' ? 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-white' : 'text-slate-400'}`}>
              <Home size={24} />
            </button>
-           <button onClick={() => setActiveTab('TASKS')} className={`p-3 rounded-xl transition-all ${activeTab === 'TASKS' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : 'text-slate-400'}`}>
+           <button onClick={() => setActiveTab('TASKS')} className={`p-3 rounded-xl transition-all ${activeTab === 'TASKS' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : 'text-slate-400'}`}>
              <ListTodo size={24} />
            </button>
-           <button onClick={() => setActiveTab('STATS')} className={`p-3 rounded-xl transition-all ${activeTab === 'STATS' ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400' : 'text-slate-400'}`}>
+           <button onClick={() => setActiveTab('STATS')} className={`p-3 rounded-xl transition-all ${activeTab === 'STATS' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400' : 'text-slate-400'}`}>
              <BarChart2 size={24} />
            </button>
            <button onClick={() => setActiveTab('SETTINGS')} className={`p-3 rounded-xl transition-all ${activeTab === 'SETTINGS' ? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200' : 'text-slate-400'}`}>
@@ -397,7 +397,7 @@ const App: React.FC = () => {
 
               {/* Tree Visual Container */}
               <div className="relative w-64 h-64 mb-4 shrink-0">
-                <div className="absolute inset-0 bg-gradient-to-b from-sky-50 to-green-50 dark:from-slate-700 dark:to-slate-800 rounded-full border-4 border-dashed border-slate-200 dark:border-slate-600 flex items-center justify-center overflow-hidden transition-colors">
+                <div className="absolute inset-0 bg-gradient-to-b from-slate-50 to-emerald-50 dark:from-slate-700 dark:to-slate-800 rounded-full border-4 border-dashed border-slate-200 dark:border-slate-600 flex items-center justify-center overflow-hidden transition-colors">
                      <TreeVisual stage={currentStage} progress={progress} type={settings.selectedTree} />
                 </div>
                 
