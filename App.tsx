@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { TimerState, TreeStage, FruitReward, BreakActivity, AppSettings, DEFAULT_SETTINGS, Task, SessionLog, TimerMode, TreeType, Quote, QUOTES } from './types';
+import { TimerState, TreeStage, FruitReward, BreakActivity, AppSettings, DEFAULT_SETTINGS, Task, SessionLog, TimerMode, TreeType, Quote, QUOTES, BeforeInstallPromptEvent } from './types';
 import TreeVisual from './components/TreeVisual';
 import GardenView from './components/GardenView';
 import TaskManager from './components/TaskManager';
@@ -45,6 +45,9 @@ const App: React.FC = () => {
   const [showDistractionWarning, setShowDistractionWarning] = useState(false);
   const [dailyQuote, setDailyQuote] = useState<Quote>(QUOTES[0]);
 
+  // PWA State
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<Date | null>(null);
   const musicRef = useRef<HTMLAudioElement | null>(null);
@@ -65,6 +68,17 @@ const App: React.FC = () => {
     // Initialize Audio
     musicRef.current = new Audio(SOUNDS.MUSIC);
     musicRef.current.loop = true;
+
+    // Install Prompt Listener
+    const handleInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setInstallPrompt(e as BeforeInstallPromptEvent);
+    };
+    window.addEventListener('beforeinstallprompt', handleInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleInstallPrompt);
+    };
   }, []);
 
   useEffect(() => {
@@ -499,7 +513,14 @@ const App: React.FC = () => {
           {/* OTHER VIEWS */}
           {activeTab === 'TASKS' && <TaskManager tasks={tasks} setTasks={setTasks} />}
           {activeTab === 'STATS' && <StatsDashboard />}
-          {activeTab === 'SETTINGS' && <SettingsPanel settings={settings} updateSettings={(s) => setSettings({...settings, ...s})} onClearData={handleClearAllData} />}
+          {activeTab === 'SETTINGS' && (
+             <SettingsPanel 
+                settings={settings} 
+                updateSettings={(s) => setSettings({...settings, ...s})} 
+                onClearData={handleClearAllData}
+                installPrompt={installPrompt} 
+             />
+          )}
           
         </div>
       </div>

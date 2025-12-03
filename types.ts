@@ -97,3 +97,13 @@ export const QUOTES: Quote[] = [
   { text: "Starve your distractions, feed your focus.", author: "Unknown" },
   { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
 ];
+
+// PWA Install Prompt Type
+export interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}

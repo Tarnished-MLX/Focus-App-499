@@ -1,17 +1,40 @@
 import React from 'react';
-import { AppSettings } from '../types';
-import { Moon, Sun, Volume2, VolumeX, Shield, ShieldAlert, Clock, Music, AlertOctagon } from 'lucide-react';
+import { AppSettings, BeforeInstallPromptEvent } from '../types';
+import { Moon, Sun, Volume2, VolumeX, Shield, ShieldAlert, Clock, Music, AlertOctagon, Download } from 'lucide-react';
 
 interface SettingsPanelProps {
   settings: AppSettings;
   updateSettings: (s: Partial<AppSettings>) => void;
   onClearData: () => void;
+  installPrompt: BeforeInstallPromptEvent | null;
 }
 
-const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, updateSettings, onClearData }) => {
+const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, updateSettings, onClearData, installPrompt }) => {
+  
+  const handleInstall = () => {
+    if (installPrompt) {
+        installPrompt.prompt();
+        installPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            }
+        });
+    }
+  };
+
   return (
     <div className="w-full h-full overflow-y-auto pb-20">
-       <h2 className="text-2xl font-bold mb-6 dark:text-white">Settings</h2>
+       <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold dark:text-white">Settings</h2>
+          {installPrompt && (
+              <button 
+                onClick={handleInstall}
+                className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-2 px-3 rounded-lg shadow-md flex items-center gap-2 transition-colors"
+              >
+                <Download size={14} /> Install App
+              </button>
+          )}
+       </div>
 
        {/* Appearance */}
        <section className="mb-6">
